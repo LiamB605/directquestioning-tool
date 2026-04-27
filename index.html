@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Direct Questioning tool</title>
+    <style>
+        :root {
+            /* Citizens Advice Brand Colors */
+            --ca-blue: #004b88;
+            --ca-yellow: #ffbf47;
+            --ca-light-blue: #e3f2fd;
+            --bg-page: #eef2f6;
+            --text-dark: #1e293b;
+            --text-muted: #64748b;
+            --border-light: #cbd5e1;
+        }
+
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Segoe UI', Arial, Helvetica, sans-serif; 
+        }
+
+        body { 
+            background-color: var(--bg-page); 
+            color: var(--text-dark); 
+            padding: 30px 15px;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 3px solid var(--ca-blue); /* Requested blue border */
+        }
+
+        /* 1. Logo Top Bar (White background so logo is visible) */
+        .header-logo-area {
+            background-color: #ffffff;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .ca-logo {
+            max-height: 75px; 
+            width: auto;
+            display: block; 
+            margin: 0 auto;
+        }
+
+        /* 2. Bold Title Banner (Restores the colourful design) */
+        .header-title-area {
+            background-color: var(--ca-blue);
+            color: #ffffff;
+            padding: 25px 30px;
+            text-align: center;
+            border-bottom: 6px solid var(--ca-yellow);
+        }
+
+        .header-title-area h1 { 
+            font-size: 2rem; 
+            margin-bottom: 8px; 
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+        
+        .header-title-area p { 
+            font-size: 1.1rem; 
+            opacity: 0.9; 
+            font-weight: 300;
+        }
+
+        /* Content Area */
+        .content {
+            padding: 40px;
+            background-color: #ffffff;
+        }
+
+        .doc-section {
+            margin-bottom: 50px;
+        }
+
+        /* Upgraded Section Titles (Look like bold tabs now) */
+        .section-title { 
+            display: inline-block;
+            font-size: 1.3rem; 
+            background-color: var(--ca-blue);
+            color: white; 
+            margin-bottom: 25px; 
+            font-weight: bold;
+            padding: 10px 20px;
+            border-radius: 6px;
+            box-shadow: 0 2px 4px rgba(0, 75, 136, 0.3);
+        }
+
+        .subsection-title { 
+            font-size: 1.2rem; 
+            margin: 35px 0 15px; 
+            color: var(--ca-blue); 
+            font-weight: bold;
+            border-bottom: 2px solid var(--border-light);
+            padding-bottom: 5px;
+        }
+
+        /* Modern Script Cards with hover effect */
+        .script-card {
+            background-color: #f8fafc;
+            border: 1px solid var(--border-light);
+            border-left: 6px solid var(--ca-blue);
+            border-radius: 8px;
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .script-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.08);
+        }
+
+        .script-text {
+            font-size: 1.15rem;
+            color: var(--ca-blue);
+            font-weight: 700;
+        }
+
+        /* Instructions */
+        .instruction { 
+            font-size: 0.95rem; 
+            color: #d32f2f; 
+            font-weight: bold; 
+            margin: 20px 0 10px 5px; 
+            display: block; 
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .instruction-muted {
+            font-size: 1rem; 
+            color: var(--text-muted); 
+            font-style: italic; 
+            margin-bottom: 20px; 
+            display: block;
+            border-left: 3px solid #cbd5e1;
+            padding-left: 15px;
+        }
+
+        /* Verbatim Highlight Box */
+        .verbatim-box { 
+            background-color: var(--ca-light-blue); 
+            border: 1px solid #b3d4f0;
+            border-left: 6px solid var(--ca-blue); 
+            padding: 25px; 
+            margin-bottom: 30px; 
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        .verbatim-box .script-text { 
+            font-size: 1.1rem; 
+            margin-bottom: 15px; 
+            color: var(--ca-blue); 
+        }
+
+        .verbatim-box .script-text:last-child { 
+            margin-bottom: 0; 
+        }
+
+        /* Conversational Interruption Box */
+        .interruption-card {
+            background-color: #fff9e6;
+            border: 1px solid #ffe69c;
+            border-left: 6px solid var(--ca-yellow);
+            border-radius: 8px;
+            padding: 18px 20px;
+            margin-bottom: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            transition: transform 0.2s ease;
+        }
+        
+        .interruption-card:hover {
+            transform: translateX(4px);
+        }
+
+        .interruption-card .script-text {
+            color: #856404;
+            font-size: 1.1rem;
+        }
+
+        /* Resolution Box Special Styling */
+        .resolution-card {
+            background-color: #f0f7e6;
+            border: 1px solid #d4e8b5;
+            border-left: 6px solid #5fa521;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+
+        .resolution-card .script-text {
+            color: #3e7011;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        
+        <div class="header-logo-area">
+            <img src="cacv-logo@2x.png" alt="Citizens Advice Logo" class="ca-logo">
+        </div>
+
+        <header class="header-title-area">
+            <h1>Direct Questioning tool</h1>
+            <p>Follow the flow below to guide the conversation and gather the facts.</p>
+        </header>
+
+        <div class="content">
+            <div class="doc-section">
+                <h2 class="section-title">Step 1: The Opening</h2>
+                
+                <div class="verbatim-box">
+                    <p class="script-text">"Good morning, you're speaking to [Advisor Name] at the Citizens Advice consumer service."</p>
+                    <p class="script-text">"Is this the first time that you've called us about your query?"</p>
+                    <p class="script-text">"Are you calling us about goods you've purchased or a service that you've paid for?"</p>
+                    <p class="script-text" style="color: #1e293b; font-weight: normal; margin-top: 20px; padding-top: 20px; border-top: 1px solid #b3d4f0;">
+                        <strong>"What I'm going to do first is take some basic information about you. Then I'll ask a few questions about the reason for the call. Once I've got enough information to be able to advise you, I'll let you know what your rights are, what options you have, and how you can try and get what you're entitled to.</strong> <br><br><strong>I might have to interrupt you at points to make sure that I've got the information that I need, and if you need me to repeat anything or explain something in further detail just ask me."</strong>
+                    </p>
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <h2 class="section-title">Step 2: Client & Contract Data</h2>
+
+                <div class="script-card">
+                    <p class="script-text">"Firstly, can I take your full name?"</p>
+                </div>
+                
+                <div class="script-card">
+                    <p class="script-text">"Secondly, what's your postcode?"</p>
+                </div>
+                
+                <span class="instruction">Confirm the client's street name:</span>
+                
+                <div class="script-card">
+                    <p class="script-text">"Is that [street name]?"</p>
+                </div>
+                
+                <div class="script-card">
+                    <p class="script-text">"What house number or name?"</p>
+                </div>
+                
+                <div class="script-card">
+                    <p class="script-text">"Is the telephone number you're calling from today that ends [last three digits] the best one for us to note down, or would you prefer that we take another?"</p>
+                </div>
+                
+                <div class="script-card">
+                    <p class="script-text">"What's your email address?"</p>
+                </div>
+                
+                <div class="script-card">
+                    <p class="script-text">"Are you calling as a private individual or on behalf of a business?"</p>
+                </div>
+                
+                <div class="script-card">
+                    <p class="script-text">"What's the name of the company your issue is with?"</p>
+                </div>
+                
+                <div class="script-card">
+                    <p class="script-text">"What is it that you've purchased or paid?"</p>
+                </div>
+                
+                <div class="script-card">
+                    <p class="script-text">"How did you pay?"</p>
+                </div>
+                
+                <div class="script-card">
+                    <p class="script-text">"How did you agree the contract, for example, was it in store, online, or some other way?"</p>
+                </div>
+                
+                <div class="script-card">
+                    <p class="script-text">"When did you form the contract?"</p>
+                </div>
+                
+                <div class="script-card">
+                    <p class="script-text">"How much did you agree to pay?"</p>
+                </div>
+                
+                <span class="instruction" style="color: #b56c00;">PCI (If applicable):</span>
+                
+                <div class="script-card" style="border-left-color: var(--ca-yellow);">
+                    <p class="script-text">"Were you given terms and conditions that said that you had 14 days to cancel your contract?"</p>
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <h2 class="section-title">Step 3: Diagnosing the Issue</h2>
+
+                <h3 class="subsection-title">📜 Breach of contract</h3>
+                <div class="script-card">
+                    <p class="script-text">"Have you received the item or service?"</p>
+                </div>
+                <div class="script-card">
+                    <p class="script-text">"Was this a term of the contract?"</p>
+                </div>
+                <div class="script-card">
+                    <p class="script-text">"Have you got this in writing?"</p>
+                </div>
+
+                <h3 class="subsection-title">📦 Goods</h3>
+                <div class="script-card">
+                    <p class="script-text">"Is the [goods] faulty?"</p>
+                </div>
+                <div class="script-card">
+                    <p class="script-text">"Is that a safety issue?"</p>
+                </div>
+                <div class="script-card">
+                    <p class="script-text">"Has a repair been attempted?"</p>
+                </div>
+                
+                <span class="instruction" style="color: #b56c00;">If the complaint is not as described:</span>
+                
+                <div class="script-card" style="border-left-color: var(--ca-yellow);">
+                    <p class="script-text">"Have you got evidence of how it was described? Or how it was advertised?"</p>
+                </div>
+
+                <h3 class="subsection-title">🛠️ Services</h3>
+                <div class="script-card">
+                    <p class="script-text">"Is the work substandard?"</p>
+                </div>
+                <div class="script-card">
+                    <p class="script-text">"Has the work been completed?"</p>
+                </div>
+                <div class="script-card">
+                    <p class="script-text">"Was a deadline given for completion?"</p>
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <h2 class="section-title" style="background-color: #5fa521;">Step 4: The Resolution</h2>
+
+                <div class="resolution-card">
+                    <p class="script-text">"What's the ideal outcome as far as you're concerned?"</p>
+                </div>
+            </div>
+
+            <div class="doc-section">
+                <h2 class="section-title" style="background-color: #d32f2f;">🛑 Managing Interruptions</h2>
+                <span class="instruction-muted">If the caller is telling a long story, use these softer, conversational phrases to gently pause them and get back to the facts.</span>
+
+                <div class="interruption-card">
+                    <p class="script-text">"I'm so sorry to jump in—I just want to make sure I've got the exact facts so I can give you the right advice. Could I just check..."</p>
+                </div>
+
+                <div class="interruption-card">
+                    <p class="script-text">"That sounds incredibly frustrating. Just so I can build a clear picture of what happened, can I ask..."</p>
+                </div>
+                
+                <div class="interruption-card">
+                    <p class="script-text">"I understand there’s a lot to this. If it’s okay, I’m just going to pause you there so I can get key information down..."</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</body>
+</html>
